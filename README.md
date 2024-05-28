@@ -1,6 +1,6 @@
 # GitLab CI Job Token Scope Adjuster
 
-![GitHub Actions](https://img.shields.io/github/actions/workflow/status/shini4i/gitlab-token-scope-adjuster/tests.yaml?branch=main)
+[![codecov](https://codecov.io/github/shini4i/gitlab-token-scope-adjuster/graph/badge.svg?token=ELQ6VQJ0Z5)](https://codecov.io/github/shini4i/gitlab-token-scope-adjuster)
 
 This CLI tool helps automate the process of configuring CI job token scopes in GitLab projects. 
 
