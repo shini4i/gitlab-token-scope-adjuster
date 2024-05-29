@@ -16,44 +16,33 @@ Starting from GitLab 16, it is mandatory to explicitly configure `CI_JOB_TOKEN` 
 - Extracts dependencies from these files.
 - Configures CI job token scopes to whitelist the source project in dependency projects.
 
+> [!NOTE]  
+> More file types will be added soon. Contributions and suggestions are welcome!
+
 ## Prerequisites
 
-- Node.js (>= 14.x)
+- Node.js (>= 22.x)
 - ts-node
 - GitLab access token with the necessary permissions
 
 ## Installation
 
-Clone the repository:
+Install [@shini4i/gitlab-token-scope-adjuster](https://www.npmjs.com/package/@shini4i/gitlab-token-scope-adjuster) package:
 
 ```sh
-git clone https://github.com/shini4i/gitlab-token-scope-adjuster.git
-cd gitlab-token-scope-adjuster
+npm install @shini4i/gitlab-token-scope-adjuster
 ```
 
-Install dependencies:
-
-```sh
-npm install
-```
-
-## Configuration
+## Usage
 
 Expose the following environment variable:
 ```sh
 export GITLAB_URL=https://gitlab.example.com
 export GITLAB_TOKEN=your_access_token
 ```
-
-## Usage
-
-The simplest approach would be:
+And run the following command:
 ```sh
-make run PROJECT_ID=<your_project_id>
-```
-or
-```sh
-ts-node src/scripts/adjust-token-scope.ts -p <your_project_id>
+gitlab-token-scope-adjuster -p <your_project_id>
 ```
 
 ## Contributing
