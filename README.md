@@ -30,7 +30,7 @@ Starting from GitLab 16, it is mandatory to explicitly configure `CI_JOB_TOKEN` 
 Install [@shini4i/gitlab-token-scope-adjuster](https://www.npmjs.com/package/@shini4i/gitlab-token-scope-adjuster) package:
 
 ```sh
-npm install @shini4i/gitlab-token-scope-adjuster
+npm install -g @shini4i/gitlab-token-scope-adjuster
 ```
 
 ## Usage
