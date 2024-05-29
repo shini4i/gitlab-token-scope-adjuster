@@ -1,21 +1,34 @@
 {
-  "name": "gitlab-token-scope-adjuster",
+  "name": "@shini4i/gitlab-token-scope-adjuster",
   "version": "0.1.0",
-  "main": "index.js",
+  "description": "CLI tool for automatically adjusting CI_JOB_TOKEN scope based on project dependencies in GitLab.",
   "scripts": {
+    "build": "tsc",
     "test": "jest",
     "coverage": "jest --coverage"
   },
-  "keywords": [],
-  "author": "",
+  "bin": {
+    "gitlab-token-scope-adjuster": "./dist/scripts/adjust-token-scope.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shini4i/gitlab-token-scope-adjuster.git"
+  },
+  "keywords": [
+    "gitlab",
+    "ci",
+    "gitlab-ci",
+    "token"
+  ],
+  "author": "Vadim Gedz <vadims@linux-tech.io>",
   "license": "MIT",
-  "description": "",
+  "readmeFilename": "README.md",
   "dependencies": {
     "@types/node": "^20.12.12",
     "axios": "^1.7.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "commander": "^12.1.0",
+    "commander": "^10.0.0",
     "reflect-metadata": "^0.2.2",
     "typescript": "^5.4.5"
   },
