@@ -3,8 +3,7 @@
 import { Command } from 'commander';
 import { NewClientConfig } from "../config/clientConfig";
 import { GitlabClient, NewGitlabClient } from "../gitlab/gitlabClient";
-import { GoModProcessor } from "../processor/goModProcessor";
-import { ComposerProcessor } from "../processor/composerProcessor";
+import { createFileProcessor } from "../processor/fileProcessor";
 
 const program = new Command();
 
@@ -22,7 +21,8 @@ program
             await adjustTokenScope(parsedProjectId);
             console.log("Finished adjusting token scope!");
         } catch (error) {
-            console.error("Errors:", error);
+            console.error("Failed to adjust token scope:", error);
+            process.exit(1);
         }
     });
 
@@ -61,24 +61,13 @@ async function fetchDependencyFiles(gitlabClient: GitlabClient, projectId: numbe
 async function processDependencyFile(gitlabClient: GitlabClient, projectId: number, defaultBranch: string, file: string, configUrl: string): Promise<string[]> {
     try {
         const fileContent = await gitlabClient.getFileContent(projectId.toString(), file, defaultBranch);
-        let dependencies: string[] = [];
+        const processor = createFileProcessor(file);
 
-        switch (file) {
-            case "go.mod": {
-                const fileProcessor = new GoModProcessor();
-                dependencies = fileProcessor.extractDependencies(fileContent, configUrl);
-                break;
-            }
-            case "composer.json": {
-                const fileProcessor = new ComposerProcessor();
-                dependencies = fileProcessor.extractDependencies(fileContent, configUrl);
-                break;
-            }
-            default: {
-                console.log(`No processor available for file type: ${file}`);
-                break;
-            }
+        if (!processor) {
+            return [];
         }
+
+        const dependencies = processor.extractDependencies(fileContent, configUrl);
 
         console.log(`Dependencies from ${file} that match the GitLab URL: `, dependencies);
         return dependencies;
@@ -117,17 +106,13 @@ async function processDependencies(gitlabClient: GitlabClient, dependencies: str
 }
 
 async function adjustTokenScope(projectId: number) {
-    try {
-        const config = NewClientConfig();
-        const gitlabClient = await getGitlabClient();
-        const project = await fetchProjectDetails(gitlabClient, projectId);
-        const dependencyFiles = await fetchDependencyFiles(gitlabClient, projectId, project.default_branch);
+    const config = NewClientConfig();
+    const gitlabClient = await getGitlabClient();
+    const project = await fetchProjectDetails(gitlabClient, projectId);
+    const dependencyFiles = await fetchDependencyFiles(gitlabClient, projectId, project.default_branch);
 
-        const allDependencies = await processAllDependencyFiles(gitlabClient, projectId, project.default_branch, dependencyFiles, config.Url!);
-        await processDependencies(gitlabClient, allDependencies, projectId);
-    } catch (error) {
-        console.error("Failed to adjust token scope:", error);
-    }
+    const allDependencies = await processAllDependencyFiles(gitlabClient, projectId, project.default_branch, dependencyFiles, config.Url!);
+    await processDependencies(gitlabClient, allDependencies, projectId);
 }
 
 program.parse(process.argv);

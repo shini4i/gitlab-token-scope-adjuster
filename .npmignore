@@ -1,0 +1,11 @@
+# Exclude source files
+src/
+
+# Exclude configuration files
+.gitignore
+.github/
+jest.config.js
+tsconfig.json
+package-lock.json
+.npmignore
+Makefile
