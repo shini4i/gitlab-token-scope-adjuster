@@ -7,7 +7,7 @@ help: ## Print this help
 
 .PHONY: run
 run: ## run adjust-token-scope script
-	@ts-node src/scripts/adjust-token-scope.ts -p $(PROJECT_ID)
+	@ts-node src/cli.ts -p $(PROJECT_ID)
 
 .PHONY: test
 test: # run all test suites
