@@ -8,7 +8,7 @@ import { createFileProcessor } from "../processor/fileProcessor";
 const program = new Command();
 
 program
-    .version('0.1.0')
+    .version('0.1.1')
     .description('CLI tool for whitelisting CI_JOB_TOKEN in dependencies projects')
     .requiredOption('-p, --project-id <id>', 'The project ID')
     .action(async ({ projectId }) => {

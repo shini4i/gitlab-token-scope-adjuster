@@ -1,6 +1,6 @@
 {
   "name": "@shini4i/gitlab-token-scope-adjuster",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI tool for automatically adjusting CI_JOB_TOKEN scope based on project dependencies in GitLab.",
   "scripts": {
     "build": "tsc",
