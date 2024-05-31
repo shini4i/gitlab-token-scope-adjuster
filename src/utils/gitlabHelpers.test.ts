@@ -112,7 +112,7 @@ describe("gitlabHelpers", () => {
             const defaultBranch = "master";
             const dependencyFiles = ["file1.txt", "file2.txt"];
 
-            mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${defaultBranch}`).reply(200, dependencyFiles);
+            mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${defaultBranch}&recursive=false&page=1&per_page=100`).reply(200, dependencyFiles);
 
             const result = await fetchDependencyFiles(gitlabClient, projectId, defaultBranch);
 
@@ -124,7 +124,7 @@ describe("gitlabHelpers", () => {
             const projectId = 1;
             const defaultBranch = "master";
 
-            mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${defaultBranch}`).reply(200, []);
+            mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${defaultBranch}&recursive=false&page=1&per_page=100`).reply(200, []);
 
             const result = await fetchDependencyFiles(gitlabClient, projectId, defaultBranch);
 
@@ -136,7 +136,7 @@ describe("gitlabHelpers", () => {
             const projectId = 1;
             const defaultBranch = "master";
 
-            mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${defaultBranch}`).reply(500);
+            mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${defaultBranch}&recursive=false&page=1&per_page=100`).reply(500);
 
             await expect(fetchDependencyFiles(gitlabClient, projectId, defaultBranch)).rejects.toThrow("Request failed with status code 500");
             expect(console.error).toHaveBeenCalledWith(`Failed to fetch dependency files for project ID ${projectId}:`, expect.any(Error));
