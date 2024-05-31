@@ -1,10 +1,12 @@
-import { GitlabClient } from "../gitlab/gitlabClient";
-import { processDependencyFile, processDependencies } from "./dependencyProcessor";
-import { createFileProcessor } from "../processor/fileProcessor";
+import {GitlabClient} from "../gitlab/gitlabClient";
+import {processDependencies, processDependencyFile} from "./dependencyProcessor";
+import {createFileProcessor} from "../processor/fileProcessor";
 
 beforeAll(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {
+    });
+    jest.spyOn(console, 'log').mockImplementation(() => {
+    });
 });
 
 jest.mock("../gitlab/gitlabClient");
