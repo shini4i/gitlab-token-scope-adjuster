@@ -10,5 +10,9 @@ run: ## run adjust-token-scope script
 	@ts-node src/cli.ts -p $(PROJECT_ID)
 
 .PHONY: test
-test: # run all test suites
+test: ## run all test suites
 	@npm test
+
+.PHONY: test-coverage
+test-coverage: ## run all test suites and generate coverage report
+	@npm run coverage

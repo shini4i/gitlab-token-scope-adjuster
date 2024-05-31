@@ -1,11 +1,19 @@
 # Exclude source files
 src/
 
+# Exclude service directories
+.github/
+.idea/
+.vscode/
+
 # Exclude configuration files
 .gitignore
-.github/
 jest.config.js
 tsconfig.json
 package-lock.json
 .npmignore
 Makefile
+
+# Exclude env files
+.env
+.envrc
