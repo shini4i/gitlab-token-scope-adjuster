@@ -2,6 +2,11 @@ import { createFileProcessor } from './fileProcessor';
 import { GoModProcessor } from './goModProcessor';
 import { ComposerProcessor } from './composerProcessor';
 
+beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+});
+
 describe('createFileProcessor', () => {
     it('should return an instance of GoModProcessor for go.mod files', () => {
         const processor = createFileProcessor('go.mod');

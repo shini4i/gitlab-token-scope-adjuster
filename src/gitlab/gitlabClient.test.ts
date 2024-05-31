@@ -4,6 +4,10 @@ import axios from 'axios';
 
 let mock: MockAdapter;
 
+beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
 beforeEach(() => {
     mock = new MockAdapter(axios);
 });
@@ -199,4 +203,37 @@ test('getFileContent throws error on unexpected encoding', async () => {
         .reply(200, fileData);
 
     await expect(client.getFileContent(projectId, filePath, branch)).rejects.toThrow('Unexpected encoding of file content received from GitLab API');
+});
+
+test('findDependencyFiles makes a GET request and returns dependency files across paginated responses', async () => {
+    const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
+    const projectId = '1';
+    const branch = 'master';
+
+    const repositoryTreePage1 = [{name: 'go.mod'}, {name: 'file1.txt'}];
+    const repositoryTreePage2 = [{name: 'composer.json'}, {name: 'file2.txt'}];
+
+    // Mock the first page of the repository tree
+    mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree`, {
+        params: {
+            ref: branch,
+            recursive: false,
+            page: 1,
+            per_page: 20,
+        },
+    }).reply(200, repositoryTreePage1, {'x-next-page': '2'});
+
+    // Mock the second page of the repository tree
+    mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree`, {
+        params: {
+            ref: branch,
+            recursive: false,
+            page: 2,
+            per_page: 20,
+        },
+    }).reply(200, repositoryTreePage2, {'x-next-page': ''});
+
+    const files = await client.findDependencyFiles(projectId, branch);
+
+    expect(files).toEqual(['go.mod', 'composer.json']);
 });
