@@ -80,6 +80,24 @@ test('findDependencyFiles makes a GET request and returns dependency files', asy
     expect(files).toEqual(['go.mod', 'composer.json']);
 });
 
+test('findDependencyFiles makes multiple GET requests and returns all dependency files', async () => {
+    const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
+    const projectId = '1';
+    const branch = 'master';
+
+    const firstPage = [{ name: 'go.mod' }, { name: 'other-file.txt' }];
+    const secondPage = [{ name: 'composer.json' }, { name: 'another-file.js' }];
+
+    mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${branch}&recursive=false&page=1&per_page=100`)
+        .replyOnce(200, firstPage, { 'x-next-page': '2' })
+        .onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/tree?ref=${branch}&recursive=false&page=2&per_page=100`)
+        .replyOnce(200, secondPage, { 'x-next-page': '' });
+
+    const files = await client.findDependencyFiles(projectId, branch);
+
+    expect(files).toEqual(['go.mod', 'composer.json']);
+});
+
 test('getProjectId makes a GET request and returns data', async () => {
     const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
     const path_with_namespace = 'mygroup/myproject';

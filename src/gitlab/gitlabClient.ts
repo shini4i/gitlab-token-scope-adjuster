@@ -1,4 +1,4 @@
-import axios, {AxiosRequestConfig, Method} from 'axios';
+import axios, { AxiosRequestConfig, Method } from 'axios';
 
 export class GitlabClient {
     private readonly Url: string | undefined;
@@ -28,7 +28,7 @@ export class GitlabClient {
 
         try {
             const response = await axios(axiosConfig);
-            return response.data;
+            return response;
         } catch (error) {
             console.error(`Request failed: ${method} ${url}`);
             throw error;
@@ -36,16 +36,16 @@ export class GitlabClient {
     }
 
     async getProject(id: string) {
-        return await this.executeRequest('get', `projects/${id}`);
+        return (await this.executeRequest('get', `projects/${id}`)).data;
     }
 
     async getProjectId(path_with_namespace: string) {
-        return (await this.executeRequest('get', `projects/${encodeURIComponent(path_with_namespace)}`)).id;
+        return (await this.executeRequest('get', `projects/${encodeURIComponent(path_with_namespace)}`)).data.id;
     }
 
     async isProjectWhitelisted(sourceProjectId: number, depProjectId: number) {
         try {
-            const allowList = await this.executeRequest('get', `projects/${depProjectId}/job_token_scope/allowlist`);
+            const allowList = (await this.executeRequest('get', `projects/${depProjectId}/job_token_scope/allowlist`)).data;
             return allowList.some((project: any) => project.id === sourceProjectId);
         } catch (error) {
             console.error(`Request failed: GET job_token_scope/allowlist`);
@@ -61,24 +61,38 @@ export class GitlabClient {
 
     async findDependencyFiles(id: string, branch: string) {
         const targetFiles = ['go.mod', 'composer.json'];
-        const files = await this.executeRequest('get', `projects/${id}/repository/tree`, null, {
-            params: {
-                ref: branch,
-                recursive: false
-            }
-        });
+        let files: any[] = [];
+        let page = 1;
+        let hasNextPage = true;
+
+        while (hasNextPage) {
+            const response = await this.executeRequest('get', `projects/${id}/repository/tree`, null, {
+                params: {
+                    ref: branch,
+                    recursive: false,
+                    page,
+                    per_page: 100,
+                },
+            });
+
+            files = files.concat(response.data);
+            const nextPage = response.headers['x-next-page'];
+            hasNextPage = nextPage !== '' && !isNaN(Number(nextPage));
+            page++;
+        }
+
         return files.map((f: { name: any; }) => f.name).filter((name: string) => targetFiles.includes(name));
     }
 
     async getFileContent(id: string, file_path: string, branch: string) {
         const encodedFilePath = encodeURIComponent(file_path);
-        const response = await this.executeRequest('get', `projects/${id}/repository/files/${encodedFilePath}`, null, {params: {ref: branch}});
+        const response = await this.executeRequest('get', `projects/${id}/repository/files/${encodedFilePath}`, null, { params: { ref: branch } });
 
-        if (response.encoding !== 'base64') {
+        if (response.data.encoding !== 'base64') {
             throw new Error('Unexpected encoding of file content received from GitLab API');
         }
 
-        return Buffer.from(response.content, 'base64').toString('utf8');
+        return Buffer.from(response.data.content, 'base64').toString('utf8');
     }
 }
 
