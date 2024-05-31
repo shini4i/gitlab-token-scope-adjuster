@@ -71,7 +71,7 @@ export class GitlabClient {
                     ref: branch,
                     recursive: false,
                     page,
-                    per_page: 100,
+                    per_page: 20,
                 },
             });
 
