@@ -143,3 +143,42 @@ test('isProjectWhitelisted returns false if the project is not in the job token 
 
     expect(isWhitelisted).toEqual(false);
 });
+
+test('getProject logs error and rethrows on failure', async () => {
+    const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
+    const projectId = '1';
+
+    mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}`).reply(500);
+
+    await expect(client.getProject(projectId)).rejects.toThrow();
+});
+
+test('isProjectWhitelisted logs error and rethrows on failure', async () => {
+    const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
+    const sourceProjectId = 1;
+    const depProjectId = 2;
+
+    mock.onGet(`https://gitlab.example.com/api/v4/projects/${depProjectId}/job_token_scope/allowlist`).reply(500);
+
+    await expect(client.isProjectWhitelisted(sourceProjectId, depProjectId)).rejects.toThrow();
+});
+
+test('getFileContent throws error on unexpected encoding', async () => {
+    const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
+    const projectId = '1';
+    const filePath = 'test.txt';
+    const branch = 'master';
+
+    const fileData = {
+        file_path: 'test.txt',
+        encoding: 'utf8',
+        content: 'Hello, world!',
+    };
+
+    const encodedFilePath = encodeURIComponent(filePath);
+
+    mock.onGet(`https://gitlab.example.com/api/v4/projects/${projectId}/repository/files/${encodedFilePath}`)
+        .reply(200, fileData);
+
+    await expect(client.getFileContent(projectId, filePath, branch)).rejects.toThrow('Unexpected encoding of file content received from GitLab API');
+});
