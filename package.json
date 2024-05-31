@@ -8,7 +8,7 @@
     "coverage": "jest --coverage"
   },
   "bin": {
-    "gitlab-token-scope-adjuster": "dist/scripts/cli.js"
+    "gitlab-token-scope-adjuster": "dist/cli.js"
   },
   "repository": {
     "type": "git",
