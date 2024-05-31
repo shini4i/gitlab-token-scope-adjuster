@@ -85,7 +85,7 @@ export class GitlabClient {
 
     async getFileContent(id: string, file_path: string, branch: string) {
         const encodedFilePath = encodeURIComponent(file_path);
-        const response = await this.executeRequest('get', `projects/${id}/repository/files/${encodedFilePath}`, null, { params: { ref: branch } });
+        const response = await this.executeRequest('get', `projects/${id}/repository/files/${encodedFilePath}`, null, {params: {ref: branch}});
 
         if (response.data.encoding !== 'base64') {
             throw new Error('Unexpected encoding of file content received from GitLab API');
