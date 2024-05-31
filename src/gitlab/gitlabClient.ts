@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, Method } from 'axios';
+import axios, {AxiosRequestConfig, Method} from 'axios';
 
 export class GitlabClient {
     private readonly Url: string | undefined;
@@ -27,8 +27,7 @@ export class GitlabClient {
         };
 
         try {
-            const response = await axios(axiosConfig);
-            return response;
+            return await axios(axiosConfig);
         } catch (error) {
             console.error(`Request failed: ${method} ${url}`);
             throw error;
