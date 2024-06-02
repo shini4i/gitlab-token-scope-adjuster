@@ -6,7 +6,7 @@ import {adjustTokenScope} from './scripts/adjust-token-scope';
 const program = new Command();
 
 program
-    .version('0.1.1')
+    .version('0.1.3')
     .description('CLI tool for whitelisting CI_JOB_TOKEN in dependencies projects');
 
 program
