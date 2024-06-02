@@ -30,7 +30,7 @@ describe("dependencyProcessor", () => {
             gitlabClient.getFileContent.mockResolvedValue(fileContent);
             (createFileProcessor as jest.Mock).mockReturnValue(processor);
 
-            const result = await processDependencyFile(gitlabClient, 1, "main", "file.txt", "configUrl");
+            const result = await processDependencyFile(gitlabClient, "1", "main", "file.txt", "configUrl");
 
             expect(gitlabClient.getFileContent).toHaveBeenCalledWith("1", "file.txt", "main");
             expect(processor.extractDependencies).toHaveBeenCalledWith(fileContent, "configUrl");
@@ -41,7 +41,7 @@ describe("dependencyProcessor", () => {
             gitlabClient.getFileContent.mockResolvedValue("file content");
             (createFileProcessor as jest.Mock).mockReturnValue(null);
 
-            const result = await processDependencyFile(gitlabClient, 1, "main", "file.txt", "configUrl");
+            const result = await processDependencyFile(gitlabClient, "1", "main", "file.txt", "configUrl");
 
             expect(result).toEqual([]);
         });
@@ -50,14 +50,14 @@ describe("dependencyProcessor", () => {
             const error = new Error("Failed to get file content");
             gitlabClient.getFileContent.mockRejectedValue(error);
 
-            await expect(processDependencyFile(gitlabClient, 1, "main", "file.txt", "configUrl")).rejects.toThrow(error);
+            await expect(processDependencyFile(gitlabClient, "1", "main", "file.txt", "configUrl")).rejects.toThrow(error);
         });
     });
 
     describe("processDependencies", () => {
         it("should grant CI job token access for dependencies", async () => {
             const dependencies = ["dependency1", "dependency2"];
-            gitlabClient.getProjectId.mockResolvedValue(2);
+            gitlabClient.getProjectId.mockResolvedValue("2");
             gitlabClient.isProjectWhitelisted.mockResolvedValue(false);
             gitlabClient.allowCiJobTokenAccess.mockResolvedValue(undefined);
 
@@ -71,7 +71,7 @@ describe("dependencyProcessor", () => {
 
         it("should skip granting access if the project is already whitelisted", async () => {
             const dependencies = ["dependency1", "dependency2"];
-            gitlabClient.getProjectId.mockResolvedValue(2);
+            gitlabClient.getProjectId.mockResolvedValue("2");
             gitlabClient.isProjectWhitelisted.mockResolvedValue(true);
 
             await processDependencies(gitlabClient, dependencies, 1);
