@@ -1,6 +1,6 @@
-import { fetchDependencyFiles, fetchProjectDetails, getGitlabClient } from "../utils/gitlabHelpers";
-import { processAllDependencyFiles, processDependencies } from "../utils/dependencyProcessor";
-import { NewClientConfig } from "../config/clientConfig";
+import {fetchDependencyFiles, fetchProjectDetails, getGitlabClient} from "../utils/gitlabHelpers";
+import {processAllDependencyFiles, processDependencies} from "../utils/dependencyProcessor";
+import {NewClientConfig} from "../config/clientConfig";
 
 export async function adjustTokenScope(projectId: number, dryRun: boolean) {
     const config = NewClientConfig();
