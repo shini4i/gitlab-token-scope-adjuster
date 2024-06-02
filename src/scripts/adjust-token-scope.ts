@@ -2,12 +2,26 @@ import {fetchDependencyFiles, fetchProjectDetails, getGitlabClient} from "../uti
 import {processAllDependencyFiles, processDependencies} from "../utils/dependencyProcessor";
 import {NewClientConfig} from "../config/clientConfig";
 
-export async function adjustTokenScope(projectId: number) {
+export async function adjustTokenScope(projectId: number, dryRun: boolean) {
     const config = NewClientConfig();
     const gitlabClient = await getGitlabClient();
     const project = await fetchProjectDetails(gitlabClient, projectId);
-    const dependencyFiles = await fetchDependencyFiles(gitlabClient, projectId, project.default_branch);
+    let dependencyFiles = await fetchDependencyFiles(gitlabClient, projectId, project.default_branch);
 
-    const allDependencies = await processAllDependencyFiles(gitlabClient, projectId, project.default_branch, dependencyFiles, config.Url!);
-    await processDependencies(gitlabClient, allDependencies, projectId);
+    if (!dependencyFiles) {
+        dependencyFiles = [];
+    }
+
+    const allDependencies = await processAllDependencyFiles(gitlabClient, projectId.toString(), project.default_branch, dependencyFiles, config.Url!);
+
+    if (allDependencies && allDependencies.length > 0) {
+        if (dryRun) {
+            console.log("Dry run mode: CI_JOB_TOKEN would be whitelisted in the following projects:");
+            allDependencies.forEach(dependency => console.log(`- ${dependency}`));
+        } else {
+            await processDependencies(gitlabClient, allDependencies, projectId);
+        }
+    } else {
+        console.error('No dependencies found to process.');
+    }
 }

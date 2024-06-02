@@ -6,13 +6,14 @@ import {adjustTokenScope} from './scripts/adjust-token-scope';
 const program = new Command();
 
 program
-    .version('0.1.2')
+    .version('0.1.1')
     .description('CLI tool for whitelisting CI_JOB_TOKEN in dependencies projects');
 
 program
     .option('-p, --project-id <id>', 'The project ID')
+    .option('--dry-run', 'Print out which projects will be updated for access without performing the actual update')
     .action(async (options) => {
-        const {projectId} = options;
+        const {projectId, dryRun} = options;
         if (!projectId) {
             program.outputHelp();
             process.exit(1);
@@ -23,7 +24,7 @@ program
                 console.error('Invalid project ID');
                 process.exit(1);
             }
-            await adjustTokenScope(parsedProjectId);
+            await adjustTokenScope(parsedProjectId, dryRun);
             console.log("Finished adjusting token scope!");
         } catch (error) {
             console.error("Failed to adjust token scope:", error);
