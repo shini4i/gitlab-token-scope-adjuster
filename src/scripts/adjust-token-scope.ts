@@ -16,7 +16,7 @@ export async function adjustTokenScope(projectId: number, dryRun: boolean) {
 
     if (allDependencies && allDependencies.length > 0) {
         if (dryRun) {
-            console.log("Dry run mode: The following projects would be updated for access:");
+            console.log("Dry run mode: CI_JOB_TOKEN would be whitelisted in the following projects:");
             allDependencies.forEach(dependency => console.log(`- ${dependency}`));
         } else {
             await processDependencies(gitlabClient, allDependencies, projectId);
