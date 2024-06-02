@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
-import { adjustTokenScope } from './scripts/adjust-token-scope';
+import {Command} from 'commander';
+import {adjustTokenScope} from './scripts/adjust-token-scope';
 
 const program = new Command();
 
@@ -13,7 +13,7 @@ program
     .option('-p, --project-id <id>', 'The project ID')
     .option('--dry-run', 'Print out which projects will be updated for access without performing the actual update')
     .action(async (options) => {
-        const { projectId, dryRun } = options;
+        const {projectId, dryRun} = options;
         if (!projectId) {
             program.outputHelp();
             process.exit(1);

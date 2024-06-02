@@ -1,5 +1,5 @@
-import { NewClientConfig } from "../config/clientConfig";
-import { GitlabClient, NewGitlabClient } from "../gitlab/gitlabClient";
+import {NewClientConfig} from "../config/clientConfig";
+import {GitlabClient, NewGitlabClient} from "../gitlab/gitlabClient";
 
 /**
  * Creates the GitLab client configuration.
@@ -7,7 +7,7 @@ import { GitlabClient, NewGitlabClient } from "../gitlab/gitlabClient";
  */
 function createGitlabClientConfig(): { url: string; token: string } {
     const config = NewClientConfig();
-    return { url: config.Url!, token: config.Token! };
+    return {url: config.Url!, token: config.Token!};
 }
 
 /**
@@ -15,7 +15,7 @@ function createGitlabClientConfig(): { url: string; token: string } {
  * @returns {Promise<GitlabClient>} A promise that resolves to a GitLab client instance.
  */
 export async function getGitlabClient(): Promise<GitlabClient> {
-    const { url, token } = createGitlabClientConfig();
+    const {url, token} = createGitlabClientConfig();
     return NewGitlabClient(url, token);
 }
 

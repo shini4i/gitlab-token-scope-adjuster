@@ -1,5 +1,5 @@
-import { GitlabClient } from "../gitlab/gitlabClient";
-import { createFileProcessor } from "../processor/fileProcessor";
+import {GitlabClient} from "../gitlab/gitlabClient";
+import {createFileProcessor} from "../processor/fileProcessor";
 
 /**
  * Processes a single dependency file and returns the extracted dependencies.
