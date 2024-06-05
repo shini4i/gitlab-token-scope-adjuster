@@ -1,5 +1,5 @@
-import { FileProcessor } from './fileProcessor';
-import { GitlabClient } from '../gitlab/gitlabClient';
+import {FileProcessor} from './fileProcessor';
+import {GitlabClient} from '../gitlab/gitlabClient';
 
 interface PackageLock {
     dependencies: Record<string, Dependency>;
@@ -30,26 +30,39 @@ export class NpmProcessor implements FileProcessor {
             if (!deps) continue;
 
             for (const details of Object.values(deps)) {
-                if (details.resolved) {
-                    const projectId = this.extractProjectId(details.resolved, gitlabUrl);
-                    if (projectId) {
-                        try {
-                            const project = await this.gitlabClient.getProject(projectId);
-                            if (project.path_with_namespace) {
-                                projectIds.add(project.path_with_namespace);
-                            }
-                        } catch (error) {
-                            console.error(`Error fetching project ${projectId}:`, error);
-                        }
-                    }
-                    if (details.dependencies) {
-                        stack.push(details.dependencies);
-                    }
-                }
+                await this.processDependency(details, gitlabUrl, projectIds, stack);
             }
         }
 
         return Array.from(projectIds);
+    }
+
+    private async processDependency(
+        details: Dependency,
+        gitlabUrl: string,
+        projectIds: Set<string>,
+        stack: Record<string, Dependency>[]
+    ) {
+        if (details.resolved) {
+            const projectId = this.extractProjectId(details.resolved, gitlabUrl);
+            if (projectId) {
+                await this.addProjectId(projectId, projectIds);
+            }
+            if (details.dependencies) {
+                stack.push(details.dependencies);
+            }
+        }
+    }
+
+    private async addProjectId(projectId: string, projectIds: Set<string>) {
+        try {
+            const project = await this.gitlabClient.getProject(projectId);
+            if (project.path_with_namespace) {
+                projectIds.add(project.path_with_namespace);
+            }
+        } catch (error) {
+            console.error(`Error fetching project ${projectId}:`, error);
+        }
     }
 
     private extractProjectId(resolvedUrl: string, gitlabUrl: string): string | null {
