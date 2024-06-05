@@ -1,4 +1,4 @@
-import {GoModProcessor} from './goModProcessor';
+import { GoModProcessor } from './goModProcessor';
 
 describe('GoModProcessor', () => {
     let goModProcessor: GoModProcessor;
@@ -7,7 +7,7 @@ describe('GoModProcessor', () => {
         goModProcessor = new GoModProcessor();
     });
 
-    test('should correctly extract dependencies', () => {
+    test('should correctly extract dependencies', async () => {
         const goModFileContent = `
 module test-package
 
@@ -22,7 +22,7 @@ require (
 )
 `;
         const gitlabUrl = 'https://gitlab.example.com';
-        const result = goModProcessor.extractDependencies(goModFileContent, gitlabUrl);
+        const result = await goModProcessor.extractDependencies(goModFileContent, gitlabUrl);
 
         expect(result).toEqual([
             'my/repo',

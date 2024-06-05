@@ -1,7 +1,7 @@
 import {FileProcessor} from './fileProcessor';
 
 export class GoModProcessor implements FileProcessor {
-    extractDependencies(fileContent: string, gitlabUrl: string): string[] {
+    extractDependencies(fileContent: string, gitlabUrl: string): Promise<string[]> {
         const lines = fileContent.split('\n');
         const strippedUrl = gitlabUrl.replace('https://', '');
 
@@ -26,6 +26,6 @@ export class GoModProcessor implements FileProcessor {
         }
 
         // we are returning only path_with_namespace part of dependencies here
-        return dependencies;
+        return Promise.resolve(dependencies);
     }
 }

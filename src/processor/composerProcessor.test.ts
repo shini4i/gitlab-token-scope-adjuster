@@ -13,7 +13,12 @@ describe('ComposerProcessor', () => {
         console.error = jest.fn();
     });
 
-    it('should extract dependencies from repositories section', () => {
+    afterAll(() => {
+        // Restore console.log
+        console.log = originalLog;
+    });
+
+    it('should extract dependencies from repositories section', async () => {
         const fileContent = JSON.stringify({
             repositories: {
                 'test/test-123': {
@@ -31,28 +36,28 @@ describe('ComposerProcessor', () => {
             }
         });
 
-        const dependencies = processor.extractDependencies(fileContent, gitlabUrl);
+        const dependencies = await processor.extractDependencies(fileContent, gitlabUrl);
         expect(dependencies).toEqual([
             'test/test-helm-repository',
             'test/terraform-automation-test'
         ]);
     });
 
-    it('should handle empty repositories section', () => {
+    it('should handle empty repositories section', async () => {
         const fileContent = JSON.stringify({
             repositories: {}
         });
 
-        const dependencies = processor.extractDependencies(fileContent, gitlabUrl);
+        const dependencies = await processor.extractDependencies(fileContent, gitlabUrl);
         expect(dependencies).toEqual([]);
     });
 
-    it('should handle invalid JSON gracefully', () => {
+    it('should handle invalid JSON gracefully', async () => {
         const fileContent = 'invalid json';
 
         const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        const dependencies = processor.extractDependencies(fileContent, gitlabUrl);
+        const dependencies = await processor.extractDependencies(fileContent, gitlabUrl);
         expect(dependencies).toEqual([]);
 
         consoleErrorMock.mockRestore();

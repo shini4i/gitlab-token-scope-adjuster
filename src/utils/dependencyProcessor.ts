@@ -14,13 +14,13 @@ import {createFileProcessor} from "../processor/fileProcessor";
 export async function processDependencyFile(gitlabClient: GitlabClient, projectId: string, defaultBranch: string, file: string, configUrl: string): Promise<string[]> {
     try {
         const fileContent = await gitlabClient.getFileContent(projectId, file, defaultBranch);
-        const processor = createFileProcessor(file);
+        const processor = createFileProcessor(file, gitlabClient);
 
         if (!processor) {
             return [];
         }
 
-        const dependencies = processor.extractDependencies(fileContent, configUrl);
+        const dependencies = await processor.extractDependencies(fileContent, configUrl);
 
         console.log(`Dependencies from ${file} that match the GitLab URL: `, dependencies);
         return dependencies;
