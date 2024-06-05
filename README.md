@@ -22,7 +22,7 @@ automating the necessary API calls.
 ## How it works?
 
 - Fetches project details from GitLab.
-- Identifies dependency files (`go.mod`, `composer.json`) in the repository.
+- Identifies dependency files (`go.mod`, `composer.json`, `package-lock.json`) in the repository.
 - Extracts dependencies from these files.
 - Configures CI job token scopes to whitelist the source project in dependency projects.
 
