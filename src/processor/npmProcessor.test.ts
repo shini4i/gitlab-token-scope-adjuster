@@ -71,5 +71,4 @@ describe('escapeRegExp', () => {
         const nonSpecialCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         expect(escapeRegExp(nonSpecialCharacters)).toEqual(nonSpecialCharacters);
     });
-
 });
