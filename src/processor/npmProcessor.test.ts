@@ -1,4 +1,4 @@
-import { NpmProcessor } from './npmProcessor';
+import { NpmProcessor, escapeRegExp } from './npmProcessor';
 import { GitlabClient } from '../gitlab/gitlabClient';
 
 jest.mock('../gitlab/gitlabClient');
@@ -58,4 +58,18 @@ describe('NpmProcessor', () => {
 
         jest.resetAllMocks();
     });
+});
+
+describe('escapeRegExp', () => {
+    test('should escape all RegExp special characters', () => {
+        const unescaped = '. * + - ? ^ $ { } ( ) | [ ] \\';
+        const expected = '\\. \\* \\+ \\- \\? \\^ \\$ \\{ \\} \\( \\) \\| \\[ \\] \\\\';
+        expect(escapeRegExp(unescaped)).toEqual(expected);
+    });
+
+    test('should leave non-special characters alone', () => {
+        const nonSpecialCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        expect(escapeRegExp(nonSpecialCharacters)).toEqual(nonSpecialCharacters);
+    });
+
 });
