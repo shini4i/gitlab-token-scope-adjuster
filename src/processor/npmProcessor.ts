@@ -34,7 +34,8 @@ export class NpmProcessor implements FileProcessor {
     }
 
     private extractProjectId(resolvedUrl: string, gitlabUrl: string): string | null {
-        const match = resolvedUrl.match(new RegExp(`${gitlabUrl}/api/v4/projects/(\\d+)/packages`));
+        const regex = new RegExp(`${gitlabUrl.replace('.', '\\.')}/api/v4/projects/(\\d+)/packages`);
+        const match = regex.exec(resolvedUrl);
         return match ? match[1] : null;
     }
 }
