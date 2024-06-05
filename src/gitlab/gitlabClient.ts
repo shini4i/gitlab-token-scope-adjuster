@@ -59,7 +59,7 @@ export class GitlabClient {
     }
 
     async findDependencyFiles(id: string, branch: string) {
-        const targetFiles = ['go.mod', 'composer.json'];
+        const targetFiles = ['go.mod', 'composer.json', "package-lock.json"];
         let files: any[] = [];
         let page = 1;
         let hasNextPage = true;

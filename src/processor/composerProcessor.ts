@@ -6,7 +6,7 @@ interface Repository {
 }
 
 export class ComposerProcessor implements FileProcessor {
-    extractDependencies(fileContent: string, gitlabUrl: string): string[] {
+    extractDependencies(fileContent: string, gitlabUrl: string): Promise<string[]> {
         const dependencies: string[] = [];
         const strippedUrl = gitlabUrl.replace('https://', '');
 
@@ -27,6 +27,6 @@ export class ComposerProcessor implements FileProcessor {
             console.error('Failed to parse composer.json file:', error);
         }
 
-        return dependencies;
+        return Promise.resolve(dependencies);
     }
 }
