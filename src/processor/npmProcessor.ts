@@ -1,6 +1,18 @@
 import { FileProcessor } from './fileProcessor';
 import { GitlabClient } from '../gitlab/gitlabClient';
 
+interface PackageLock {
+    dependencies: Record<string, Dependency>;
+}
+
+interface Dependency {
+    version: string;
+    resolved: string;
+    integrity: string;
+    peer?: boolean;
+    dependencies?: Record<string, Dependency>;
+}
+
 export class NpmProcessor implements FileProcessor {
     private gitlabClient: GitlabClient;
 
@@ -9,27 +21,34 @@ export class NpmProcessor implements FileProcessor {
     }
 
     async extractDependencies(fileContent: string, gitlabUrl: string): Promise<string[]> {
-        const packageLock = JSON.parse(fileContent);
+        const packageLock: PackageLock = JSON.parse(fileContent);
         const projectIds = new Set<string>();
+        const stack = [packageLock.dependencies];
 
-        const extractProjectIds = async (deps: Record<string, any>) => {
+        while (stack.length > 0) {
+            const deps = stack.pop();
+            if (!deps) continue;
+
             for (const details of Object.values(deps)) {
-                if (typeof details === 'object' && details !== null && details.resolved) {
+                if (details.resolved) {
                     const projectId = this.extractProjectId(details.resolved, gitlabUrl);
                     if (projectId) {
-                        const project = await this.gitlabClient.getProject(projectId);
-                        if(project.path_with_namespace) {
-                            projectIds.add(project.path_with_namespace);
+                        try {
+                            const project = await this.gitlabClient.getProject(projectId);
+                            if (project.path_with_namespace) {
+                                projectIds.add(project.path_with_namespace);
+                            }
+                        } catch (error) {
+                            console.error(`Error fetching project ${projectId}:`, error);
                         }
                     }
                     if (details.dependencies) {
-                        await extractProjectIds(details.dependencies);
+                        stack.push(details.dependencies);
                     }
                 }
             }
-        };
+        }
 
-        await extractProjectIds(packageLock.dependencies);
         return Array.from(projectIds);
     }
 
@@ -39,9 +58,8 @@ export class NpmProcessor implements FileProcessor {
         const match = regex.exec(resolvedUrl);
         return match ? match[1] : null;
     }
-
 }
 
-export function escapeRegExp(string: string) {
+export function escapeRegExp(string: string): string {
     return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
 }

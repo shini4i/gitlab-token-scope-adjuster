@@ -36,11 +36,11 @@ describe('NpmProcessor', () => {
 
         const result = await npmProcessor.extractDependencies(mockFileContent, mockGitlabUrl);
 
-        expect(result).toEqual([
+        expect(result.sort()).toEqual([
             'namespaceA/projectA',
             'namespaceB/projectB',
             'namespaceC/projectC'
-        ]);
+        ].sort());
 
         expect(gitlabClient.getProject).toHaveBeenCalledTimes(3);
 
