@@ -25,7 +25,7 @@ program
                 console.error('Invalid project ID');
                 process.exit(1);
             }
-            await adjustTokenScope(parsedProjectId, dryRun, monorepo);   // Pass the monorepo flag to your method
+            await adjustTokenScope(parsedProjectId, dryRun, monorepo);
             console.log("Finished adjusting token scope!");
         } catch (error) {
             console.error("Failed to adjust token scope:", error);
