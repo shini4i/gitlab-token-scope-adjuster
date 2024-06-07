@@ -16,9 +16,6 @@ This CLI tool helps automate the process of configuring CI job token scopes in G
 Starting from GitLab 16, it is mandatory to explicitly configure `CI_JOB_TOKEN` access, and this tool simplifies that by
 automating the necessary API calls.
 
-> [!WARNING]
-> This project is currently in the Proof of Concept (PoC) stage and may be error-prone. It is not recommended for use in production environments.
-
 ## How it works?
 
 - Fetches project details from GitLab.
@@ -34,9 +31,6 @@ graph LR
     D --> E[Extract Dependencies]
     E --> F[Whitelist project CI_JOB_TOKEN in the Dependency Project]
 ```
-
-> [!NOTE]
-> More dependency file types will be added soon. Contributions and suggestions are welcome!
 
 ## Prerequisites
 
@@ -54,7 +48,7 @@ npm install -g @shini4i/gitlab-token-scope-adjuster
 
 ## Usage
 
-Expose the following environment variable:
+Expose the following environment variables:
 
 ```sh
 export GITLAB_URL=https://gitlab.example.com
@@ -66,6 +60,15 @@ And run the following command:
 ```sh
 gitlab-token-scope-adjuster -p <your_project_id>
 ```
+
+To find dependency files recursively run the following command:
+```sh
+gitlab-token-scope-adjuster -p <your_project_id> --monorepo
+```
+
+Keep in mind that depending on the amount of files in the repo it can significantly increase execution time.
+
+Additionally, before making changes, it is possible to check which dependency projects would be edited by passing `--dry-run` flag.
 
 ## Contributing
 

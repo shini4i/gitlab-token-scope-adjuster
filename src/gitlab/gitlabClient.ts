@@ -58,7 +58,7 @@ export class GitlabClient {
         });
     }
 
-    async findDependencyFiles(id: string, branch: string) {
+    async findDependencyFiles(id: string, branch: string, isMonorepo: boolean = false) {
         const targetFiles = ['go.mod', 'composer.json', "package-lock.json"];
         let files: any[] = [];
         let page = 1;
@@ -68,7 +68,7 @@ export class GitlabClient {
             const response = await this.executeRequest('get', `projects/${id}/repository/tree`, null, {
                 params: {
                     ref: branch,
-                    recursive: false,
+                    recursive: isMonorepo, //Use isMonorepo flag to decide whether to fetch files recursively
                     page,
                     per_page: 20,
                 },
@@ -80,7 +80,9 @@ export class GitlabClient {
             page++;
         }
 
-        return files.map((f: { name: any; }) => f.name).filter((name: string) => targetFiles.includes(name));
+        // If it's a monorepo, files parameter contains path to file
+        return files.map((f: { path: any; name: any; }) => isMonorepo ? f.path : f.name)
+            .filter((name: string) => targetFiles.some(file => name.endsWith(file)));
     }
 
     async getFileContent(id: string, file_path: string, branch: string) {

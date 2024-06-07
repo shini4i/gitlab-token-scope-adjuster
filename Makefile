@@ -9,9 +9,9 @@ help: ## Print this help
 run: ## run adjust-token-scope script
 	@ts-node src/cli.ts -p $(PROJECT_ID)
 
-.PHONE: dry-run
+.PHONY: dry-run
 dry-run: ## run adjust-token-scope script in dry-run mode
-	@ts-node src/cli.ts -p $(PROJECT_ID) --dry-run
+	@ts-node src/cli.ts -p $(PROJECT_ID) --dry-run --monorepo
 
 .PHONY: test
 test: ## run all test suites

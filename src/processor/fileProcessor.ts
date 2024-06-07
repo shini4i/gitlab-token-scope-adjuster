@@ -1,3 +1,5 @@
+import path from 'path';
+
 import {GoModProcessor} from './goModProcessor';
 import {ComposerProcessor} from './composerProcessor';
 import {NpmProcessor} from "./npmProcessor";
@@ -8,7 +10,8 @@ export interface FileProcessor {
 }
 
 export function createFileProcessor(file: string, gitlabClient: GitlabClient): FileProcessor | undefined {
-    switch (file) {
+    const baseName = path.basename(file);
+    switch (baseName) {
         case "go.mod":
             return new GoModProcessor();
         case "composer.json":

@@ -55,9 +55,9 @@ describe("gitlabHelpers", () => {
             const dependencyFiles = ["file1.txt", "file2.txt"];
             mockGitlabClient.findDependencyFiles.mockResolvedValue(dependencyFiles);
 
-            const result = await fetchDependencyFiles(mockGitlabClient, projectId, defaultBranch);
+            const result = await fetchDependencyFiles(mockGitlabClient, projectId, defaultBranch, false);
             expect(result).toEqual(dependencyFiles);
-            expect(mockGitlabClient.findDependencyFiles).toHaveBeenCalledWith(projectId.toString(), defaultBranch);
+            expect(mockGitlabClient.findDependencyFiles).toHaveBeenCalledWith(projectId.toString(), defaultBranch, false);
         });
 
         it("should log a warning and return an empty array if no dependency files are found", async () => {
@@ -65,9 +65,9 @@ describe("gitlabHelpers", () => {
             const defaultBranch = "main";
             mockGitlabClient.findDependencyFiles.mockResolvedValue([]);
 
-            const result = await fetchDependencyFiles(mockGitlabClient, projectId, defaultBranch);
+            const result = await fetchDependencyFiles(mockGitlabClient, projectId, defaultBranch, false);
             expect(result).toEqual([]);
-            expect(mockGitlabClient.findDependencyFiles).toHaveBeenCalledWith(projectId.toString(), defaultBranch);
+            expect(mockGitlabClient.findDependencyFiles).toHaveBeenCalledWith(projectId.toString(), defaultBranch, false);
         });
 
         it("should log an error and rethrow if fetching dependency files fails", async () => {
@@ -76,8 +76,8 @@ describe("gitlabHelpers", () => {
             const error = new Error("Failed to fetch dependency files");
             mockGitlabClient.findDependencyFiles.mockRejectedValue(error);
 
-            await expect(fetchDependencyFiles(mockGitlabClient, projectId, defaultBranch)).rejects.toThrow(error);
-            expect(mockGitlabClient.findDependencyFiles).toHaveBeenCalledWith(projectId.toString(), defaultBranch);
+            await expect(fetchDependencyFiles(mockGitlabClient, projectId, defaultBranch, false)).rejects.toThrow(error);
+            expect(mockGitlabClient.findDependencyFiles).toHaveBeenCalledWith(projectId.toString(), defaultBranch, false);
         });
     });
 });
