@@ -75,11 +75,12 @@ async function logDependencyFiles(dependencyFiles: string[]): Promise<void> {
  * @param {GitlabClient} gitlabClient - The GitLab client instance.
  * @param {number} projectId - The ID of the project to fetch dependency files for.
  * @param {string} defaultBranch - The default branch of the project.
+ * @param {boolean} monorepo - Flag indicating whether the project should be treated as a monorepo or not.
  * @returns {Promise<string[]>} A promise that resolves to the list of dependency files.
  */
-export async function fetchDependencyFiles(gitlabClient: GitlabClient, projectId: number, defaultBranch: string) {
+export async function fetchDependencyFiles(gitlabClient: GitlabClient, projectId: number, defaultBranch: string, monorepo: boolean) {
     try {
-        const dependencyFiles = await gitlabClient.findDependencyFiles(projectId.toString(), defaultBranch);
+        const dependencyFiles = await gitlabClient.findDependencyFiles(projectId.toString(), defaultBranch, monorepo);
         await logDependencyFiles(dependencyFiles);
         return dependencyFiles;
     } catch (error) {

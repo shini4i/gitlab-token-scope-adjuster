@@ -22,7 +22,7 @@ export async function processDependencyFile(gitlabClient: GitlabClient, projectI
 
         const dependencies = await processor.extractDependencies(fileContent, configUrl);
 
-        console.log(`Dependencies from ${file} that match the GitLab URL: `, dependencies);
+        console.log(`Dependencies from \x1b[36m${file}\x1b[0m that match the GitLab URL: `, dependencies);
         return dependencies;
     } catch (error) {
         console.error(`Failed to process dependency file ${file} for project ID ${projectId}:`, error);

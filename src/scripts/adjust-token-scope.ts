@@ -2,11 +2,11 @@ import {fetchDependencyFiles, fetchProjectDetails, getGitlabClient} from "../uti
 import {processAllDependencyFiles, processDependencies} from "../utils/dependencyProcessor";
 import {NewClientConfig} from "../config/clientConfig";
 
-export async function adjustTokenScope(projectId: number, dryRun: boolean) {
+export async function adjustTokenScope(projectId: number, dryRun: boolean, monorepo: boolean) {
     const config = NewClientConfig();
     const gitlabClient = await getGitlabClient();
     const project = await fetchProjectDetails(gitlabClient, projectId);
-    let dependencyFiles = await fetchDependencyFiles(gitlabClient, projectId, project.default_branch);
+    let dependencyFiles = await fetchDependencyFiles(gitlabClient, projectId, project.default_branch, monorepo);
 
     if (!dependencyFiles) {
         dependencyFiles = [];
