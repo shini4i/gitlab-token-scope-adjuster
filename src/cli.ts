@@ -12,7 +12,7 @@ program
 program
     .option('-p, --project-id <id>', 'The project ID')
     .option('--dry-run', 'Print out which projects will be updated for access without performing the actual update')
-    .option('--monorepo', 'Consider project as a monorepo and find files recursively')  // Add the monorepo flag here
+    .option('--monorepo', 'Consider project as a monorepo and find files recursively')
     .action(async (options) => {
         const {projectId, dryRun, monorepo} = options;
         if (!projectId) {
