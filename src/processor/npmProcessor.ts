@@ -46,7 +46,7 @@ export class NpmProcessor implements FileProcessor {
         if (details.resolved) {
             const projectId = this.extractProjectId(details.resolved, gitlabUrl);
             if (projectId) {
-                await this.addProjectId(projectId, projectIds);
+                await this.addProjectToSet(projectId, projectIds);
             }
             if (details.dependencies) {
                 stack.push(details.dependencies);
@@ -54,7 +54,7 @@ export class NpmProcessor implements FileProcessor {
         }
     }
 
-    private async addProjectId(projectId: string, projectIds: Set<string>) {
+    private async addProjectToSet(projectId: string, projectIds: Set<string>) {
         try {
             const project = await this.gitlabClient.getProject(projectId);
             if (project.path_with_namespace) {
