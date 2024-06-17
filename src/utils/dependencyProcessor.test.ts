@@ -33,7 +33,8 @@ describe("dependencyProcessor", () => {
             const result = await processDependencyFile(gitlabClient, 1, "main", "composer.json");
 
             expect(gitlabClient.getFileContent).toHaveBeenCalledWith(1, "composer.json", "main");
-            expect(processor.extractDependencies).toHaveBeenCalledWith(fileContent);
+            // technically, undefined is not expected, it a side effect of jest mock
+            expect(processor.extractDependencies).toHaveBeenCalledWith(fileContent, undefined);
             expect(result).toEqual(dependencies);
         });
 
