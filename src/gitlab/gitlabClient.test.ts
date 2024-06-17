@@ -219,3 +219,8 @@ test('findDependencyFiles makes a GET request and returns dependency files acros
 
     expect(files).toEqual(['go.mod', 'composer.json']);
 });
+
+test('gitlab client should return the correct url', async () => {
+    const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
+    expect(client.Url).toEqual('https://gitlab.example.com')
+});
