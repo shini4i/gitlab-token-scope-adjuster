@@ -40,7 +40,7 @@ test('getFileContent makes a GET request and returns data', async () => {
         content: fileContent,
     };
 
-    const projectId = '1';
+    const projectId = 1;
     const filePath = 'test.txt';
     const branch = 'master';
 
@@ -169,7 +169,7 @@ test('isProjectWhitelisted logs error and rethrows on failure', async () => {
 
 test('getFileContent throws error on unexpected encoding', async () => {
     const client = NewGitlabClient('https://gitlab.example.com', 'MyToken');
-    const projectId = '1';
+    const projectId = 1;
     const filePath = 'test.txt';
     const branch = 'master';
 

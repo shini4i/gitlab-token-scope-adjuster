@@ -1,19 +1,23 @@
 import axios, {AxiosRequestConfig, Method} from 'axios';
 
 export class GitlabClient {
-    private readonly Url: string | undefined;
-    private readonly Token: string | undefined;
+    private readonly url: string;
+    private readonly token: string;
 
     constructor(Url: string, Token: string) {
-        this.Url = Url;
-        this.Token = Token;
+        this.url = Url;
+        this.token = Token;
+    }
+
+    get Url(): string {
+        return this.url
     }
 
     private async executeRequest(method: Method, endpoint: string, data?: any, config?: any): Promise<any> {
-        const url = `${this.Url}/api/v4/${endpoint}`;
+        const url = `${this.url}/api/v4/${endpoint}`;
 
         const headers = {
-            'PRIVATE-TOKEN': this.Token,
+            'PRIVATE-TOKEN': this.token,
             'Content-Type': 'application/json',
             ...(config?.headers || {}),
         };
@@ -85,7 +89,7 @@ export class GitlabClient {
             .filter((name: string) => targetFiles.some(file => name.endsWith(file)));
     }
 
-    async getFileContent(id: string, file_path: string, branch: string) {
+    async getFileContent(id: number, file_path: string, branch: string) {
         const encodedFilePath = encodeURIComponent(file_path);
         const response = await this.executeRequest('get', `projects/${id}/repository/files/${encodedFilePath}`, null, {params: {ref: branch}});
 

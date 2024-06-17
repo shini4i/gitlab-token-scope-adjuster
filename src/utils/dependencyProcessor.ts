@@ -8,10 +8,9 @@ import {createFileProcessor} from "../processor/fileProcessor";
  * @param projectId - The ID of the project.
  * @param defaultBranch - The default branch of the project.
  * @param file - The path to the dependency file.
- * @param configUrl - The configuration URL.
  * @returns A promise that resolves to an array of extracted dependencies.
  */
-export async function processDependencyFile(gitlabClient: GitlabClient, projectId: string, defaultBranch: string, file: string, configUrl: string): Promise<string[]> {
+export async function processDependencyFile(gitlabClient: GitlabClient, projectId: number, defaultBranch: string, file: string): Promise<string[]> {
     try {
         const fileContent = await gitlabClient.getFileContent(projectId, file, defaultBranch);
         const processor = createFileProcessor(file, gitlabClient);
@@ -20,7 +19,7 @@ export async function processDependencyFile(gitlabClient: GitlabClient, projectI
             return [];
         }
 
-        const dependencies = await processor.extractDependencies(fileContent, configUrl);
+        const dependencies = await processor.extractDependencies(fileContent, gitlabClient.Url);
 
         console.log(`Dependencies from \x1b[36m${file}\x1b[0m that match the GitLab URL: `, dependencies);
         return dependencies;
@@ -37,19 +36,17 @@ export async function processDependencyFile(gitlabClient: GitlabClient, projectI
  * @param projectId - The ID of the project.
  * @param defaultBranch - The default branch of the project.
  * @param dependencyFiles - An array of paths to the dependency files.
- * @param configUrl - The configuration URL.
  * @returns A promise that resolves to an array of aggregated dependencies.
  */
-export async function processAllDependencyFiles(gitlabClient: GitlabClient, projectId: string, defaultBranch: string, dependencyFiles: string[], configUrl: string): Promise<string[]> {
+export async function processAllDependencyFiles(gitlabClient: GitlabClient, projectId: number, defaultBranch: string, dependencyFiles: string[]): Promise<string[]> {
     const allDependencies: string[] = [];
 
     for (const file of dependencyFiles) {
         try {
-            const dependencies = await processDependencyFile(gitlabClient, projectId, defaultBranch, file, configUrl);
+            const dependencies = await processDependencyFile(gitlabClient, projectId, defaultBranch, file);
             allDependencies.push(...dependencies);
         } catch (error) {
             console.error(`Error processing file ${file}:`, error);
-            // Continue processing the remaining files
         }
     }
 
