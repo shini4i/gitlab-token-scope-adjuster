@@ -30,10 +30,10 @@ describe("dependencyProcessor", () => {
             gitlabClient.getFileContent.mockResolvedValue(fileContent);
             (createFileProcessor as jest.Mock).mockReturnValue(processor);
 
-            const result = await processDependencyFile(gitlabClient, "1", "main", "file.txt", "configUrl");
+            const result = await processDependencyFile(gitlabClient, 1, "main", "composer.json");
 
-            expect(gitlabClient.getFileContent).toHaveBeenCalledWith("1", "file.txt", "main");
-            expect(processor.extractDependencies).toHaveBeenCalledWith(fileContent, "configUrl");
+            expect(gitlabClient.getFileContent).toHaveBeenCalledWith(1, "composer.json", "main");
+            expect(processor.extractDependencies).toHaveBeenCalledWith(fileContent, gitlabClient.Url);
             expect(result).toEqual(dependencies);
         });
 
@@ -41,7 +41,7 @@ describe("dependencyProcessor", () => {
             gitlabClient.getFileContent.mockResolvedValue("file content");
             (createFileProcessor as jest.Mock).mockReturnValue(null);
 
-            const result = await processDependencyFile(gitlabClient, "1", "main", "file.txt", "configUrl");
+            const result = await processDependencyFile(gitlabClient, 1, "main", "file.txt");
 
             expect(result).toEqual([]);
         });
@@ -50,7 +50,7 @@ describe("dependencyProcessor", () => {
             const error = new Error("Failed to get file content");
             gitlabClient.getFileContent.mockRejectedValue(error);
 
-            await expect(processDependencyFile(gitlabClient, "1", "main", "file.txt", "configUrl")).rejects.toThrow(error);
+            await expect(processDependencyFile(gitlabClient, 1, "main", "file.txt")).rejects.toThrow(error);
         });
     });
 
