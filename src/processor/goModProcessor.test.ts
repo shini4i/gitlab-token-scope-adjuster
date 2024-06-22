@@ -1,14 +1,14 @@
 import { GoModProcessor } from './goModProcessor';
 
 describe('GoModProcessor', () => {
-    let goModProcessor: GoModProcessor;
+  let goModProcessor: GoModProcessor;
 
-    beforeEach(() => {
-        goModProcessor = new GoModProcessor();
-    });
+  beforeEach(() => {
+    goModProcessor = new GoModProcessor();
+  });
 
-    test('should correctly extract dependencies', async () => {
-        const goModFileContent = `
+  test('should correctly extract dependencies', async () => {
+    const goModFileContent = `
 module test-package
 
 go 1.22
@@ -21,12 +21,12 @@ require (
     gitlab.example.com/another/repo v0.0.1
 )
 `;
-        const gitlabUrl = 'https://gitlab.example.com';
-        const result = await goModProcessor.extractDependencies(goModFileContent, gitlabUrl);
+    const gitlabUrl = 'https://gitlab.example.com';
+    const result = await goModProcessor.extractDependencies(goModFileContent, gitlabUrl);
 
-        expect(result).toEqual([
-            'my/repo',
-            'another/repo',
-        ]);
-    });
+    expect(result).toEqual([
+      'my/repo',
+      'another/repo',
+    ]);
+  });
 });
