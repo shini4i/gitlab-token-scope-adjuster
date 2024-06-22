@@ -1,13 +1,13 @@
-import {NewClientConfig} from "../config/clientConfig";
-import {GitlabClient, NewGitlabClient} from "../gitlab/gitlabClient";
+import { NewClientConfig } from '../config/clientConfig';
+import { GitlabClient, NewGitlabClient } from '../gitlab/gitlabClient';
 
 /**
  * Creates the GitLab client configuration.
  * @returns {Object} An object containing the URL and token for the GitLab client.
  */
 function createGitlabClientConfig(): { url: string; token: string } {
-    const config = NewClientConfig();
-    return {url: config.Url!, token: config.Token!};
+  const config = NewClientConfig();
+  return { url: config.Url!, token: config.Token! };
 }
 
 /**
@@ -15,8 +15,8 @@ function createGitlabClientConfig(): { url: string; token: string } {
  * @returns {Promise<GitlabClient>} A promise that resolves to a GitLab client instance.
  */
 export async function getGitlabClient(): Promise<GitlabClient> {
-    const {url, token} = createGitlabClientConfig();
-    return NewGitlabClient(url, token);
+  const { url, token } = createGitlabClientConfig();
+  return NewGitlabClient(url, token);
 }
 
 /**
@@ -25,8 +25,8 @@ export async function getGitlabClient(): Promise<GitlabClient> {
  * @returns {Promise<void>} A promise that resolves when the logging is complete.
  */
 async function logProjectDetails(project: any): Promise<void> {
-    console.log("Project name:", project.path_with_namespace);
-    console.log("Default branch:", project.default_branch);
+  console.log('Project name:', project.path_with_namespace);
+  console.log('Default branch:', project.default_branch);
 }
 
 /**
@@ -37,8 +37,8 @@ async function logProjectDetails(project: any): Promise<void> {
  * @returns {Promise<void>} A promise that resolves when the error handling is complete.
  */
 async function handleFetchError(error: any, projectId: number, context: string): Promise<void> {
-    console.error(`Failed to ${context} for project ID ${projectId}:`, error);
-    throw error;
+  console.error(`Failed to ${context} for project ID ${projectId}:`, error);
+  throw error;
 }
 
 /**
@@ -48,13 +48,13 @@ async function handleFetchError(error: any, projectId: number, context: string):
  * @returns {Promise<Object>} A promise that resolves to the project details.
  */
 export async function fetchProjectDetails(gitlabClient: GitlabClient, projectId: number) {
-    try {
-        const project = await gitlabClient.getProject(projectId.toString());
-        await logProjectDetails(project);
-        return project;
-    } catch (error) {
-        await handleFetchError(error, projectId, "fetch project details");
-    }
+  try {
+    const project = await gitlabClient.getProject(projectId.toString());
+    await logProjectDetails(project);
+    return project;
+  } catch (error) {
+    await handleFetchError(error, projectId, 'fetch project details');
+  }
 }
 
 /**
@@ -63,11 +63,11 @@ export async function fetchProjectDetails(gitlabClient: GitlabClient, projectId:
  * @returns {Promise<void>} A promise that resolves when the logging is complete.
  */
 async function logDependencyFiles(dependencyFiles: string[]): Promise<void> {
-    if (dependencyFiles.length === 0) {
-        console.warn("No dependency files found");
-    } else {
-        console.log("Found the following dependency files:", dependencyFiles);
-    }
+  if (dependencyFiles.length === 0) {
+    console.warn('No dependency files found');
+  } else {
+    console.log('Found the following dependency files:', dependencyFiles);
+  }
 }
 
 /**
@@ -79,11 +79,11 @@ async function logDependencyFiles(dependencyFiles: string[]): Promise<void> {
  * @returns {Promise<string[]>} A promise that resolves to the list of dependency files.
  */
 export async function fetchDependencyFiles(gitlabClient: GitlabClient, projectId: number, defaultBranch: string, monorepo: boolean) {
-    try {
-        const dependencyFiles = await gitlabClient.findDependencyFiles(projectId.toString(), defaultBranch, monorepo);
-        await logDependencyFiles(dependencyFiles);
-        return dependencyFiles;
-    } catch (error) {
-        await handleFetchError(error, projectId, "fetch dependency files");
-    }
+  try {
+    const dependencyFiles = await gitlabClient.findDependencyFiles(projectId.toString(), defaultBranch, monorepo);
+    await logDependencyFiles(dependencyFiles);
+    return dependencyFiles;
+  } catch (error) {
+    await handleFetchError(error, projectId, 'fetch dependency files');
+  }
 }
